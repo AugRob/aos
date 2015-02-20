@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>AOS Version 0.1a</title>
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.18.1/build/cssreset/cssreset-min.css">
+    <style>
+        html,
+        body {
+            height: auto;
+            background-color: #000;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 1em;
+            color: #00ff00;
+            padding: 5px;
+        }
+        
+        * {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            cursor: default;
+        }
+        
+        .prompt {
+            display: inline;
+            position: absolute;
+            padding-bottom: 3px;
+        }
+        
+        #Input, .oldInputLine {
+            width: auto;
+            background-color: #000;
+            font-family: monospace;
+            color: #00ff00;
+            display: inline;
+            outline: none;
+            border: none;
+            resize: none;
+            margin-left: 2em;
+            width: 93%
+        }
+    </style>
+    <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+
+    <!-- PROGRAM SCRIPTS GO HERE -->
+
+    <script src="io.js"></script>
+    <script src="coreprogs.js"></script>
+
+
+
+
+    <script>
+        var AOS_VERSION = "0.1a"
+        var programList = [echo, clear]
+
+        $(document).ready(function () {
+            console.log("ready");
+            output("AOS Version " + AOS_VERSION);
+            newline();
+            main();
+        });
+    </script>
+    <script>
+        function main() {
+
+
+            var userInput;
+            var inputString;
+            var command = "";
+            var params = "";
+
+            function scanInput(inputText) {
+                $( '#Input' ).attr("readonly", "true");
+                $( '#Input' ).removeAttr("id");
+                var hasCommand = false;
+                for (var i = 0; i < inputText.length; i++) {
+                    
+                    
+                    if (inputText[i] != " " && hasCommand == false) {
+                        command = command + inputText[i];
+                    }
+                    
+                    else if ( inputText[i] == " " && hasCommand == false ) {
+                        hasCommand = true;
+                    }
+                    else {
+                        params = params + inputText[i - 1];
+                    }
+                }
+                
+                for (var j = 0; j < programList.length; j++) {
+                    if ( command == programList[j] ) {
+                        command = programList[j];
+                        command(params);
+                    }
+                }
+            }
+
+
+
+            while (1 === 1) {
+                $('body').append("<p class='prompt'>" + "-->" + "</p>");
+                userInput = function () {
+                    $('body').append("<textarea id='Input' class='oldInputLine' autofocus='true' rows='1'>" + "</textarea>");
+                    
+                    $( document ).click( function() {
+                        $( '#Input' ).focus();
+                    });
+                    
+                    $('#Input').keydown(function (event) {
+                        if (event.which == 13) {
+                            event.preventDefault();
+                            scanInput( $('#Input').val() );
+                        }
+                    });
+                }
+
+                userInput();
+    
+                break;
+
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>
